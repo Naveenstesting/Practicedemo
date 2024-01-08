@@ -1,0 +1,1694 @@
+{
+	"info": {
+		"_postman_id": "8cbc761f-1aa2-435c-89d4-e55cf68476b0",
+		"name": "Patient Portal GraphQL Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "DEV",
+			"item": [
+				{
+					"name": "DEV Authentication Token Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.collectionVariables.set(\"userAccessToken\", jsonData.result.accessToken);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ChetanAdmin_dev@e.rainforestqa.com\",\r\n    \"password\": \"P@ssword1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{AuthenticationDev}}",
+							"host": [
+								"{{AuthenticationDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CIAM-PP Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.environment.set(\"ServiceToken\", jsonData.accessToken);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-usw1-app-token-generator-dev.ase-usw1-shared-ppe.p.azurewebsites.net/Token/get-token-by-source-dest?sourceApplicationId=2&destinationApplicationId=10",
+							"protocol": "https",
+							"host": [
+								"web-usw1-app-token-generator-dev",
+								"ase-usw1-shared-ppe",
+								"p",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Token",
+								"get-token-by-source-dest"
+							],
+							"query": [
+								{
+									"key": "sourceApplicationId",
+									"value": "2"
+								},
+								{
+									"key": "destinationApplicationId",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "migrationDataByEmail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"migrationDataByEmail\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.migrationDataByEmail);\r",
+									"if(jsonData.data.migrationDataByEmail == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.findfacilities).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Ocp-Apim-Subscription-Key",
+								"value": "d77342692d88483f9565d02d116916e9",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query migrationDataByEmail($email: String)\r\n{\r\n  migrationDataByEmail(email:$email)\r\n  {\r\n    migrationData{\r\n      isMigrationCompleted\r\n      isEligibleForMigration\r\n      migrationUrl\r\n      patientLastName\r\n      patientFirstName\r\n      portalName\r\n      userEmail\r\n      userLastName\r\n      userFirstName\r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"email\": \"slot2.hellossoab@e.rainforestqa.com\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{DevAPIM}}",
+							"host": [
+								"{{DevAPIM}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRelatedPatients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"get Related Patients\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.findfacilities);\r",
+									"if(jsonData.data.getRelatedPatients == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.findfacilities).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query getRelatedPatients($userId: Int)\r\n{\r\n  getRelatedPatients(userId:$userId,getCompletedEnrollments:null)\r\n  {\r\n    enrollmentId\r\n    enrollmentStatus\r\n    firstName\r\n    lastName\r\n    patientDateOfBirth\r\n    patientEnrollmentType\r\n    portalName\r\n    sourceId\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": \r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"Patients\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.patient);\r",
+									"if(jsonData.data.patient == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.findfacilities).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Patient($patientId: String){\r\n  patient(patientId:$patientId)\r\n  {\r\n    dateOfBirth\r\n    domainId\r\n    domain{\r\n      \tdomainId\r\n     \t name\r\n      portal{\r\n        dashboardUrl\r\n        loginUrl\r\n        name\r\n        portalId\r\n        portalType\r\n        selfEnrollmentUrl\r\n      }\r\n    }\r\n    address{\r\n      city\r\n      countryCode\r\n      line1\r\n      line2\r\n      stateOrProvince\r\n      zipCode\r\n    }\r\n    firstName\r\n    gender\r\n    lastName\r\n    patientId\r\n    patientMrns{\r\n      mrn\r\n      \r\n      patient{\r\n        address{\r\n      \t\t\t\t\tcity\r\n      \t\t\t\t\tcountryCode\r\n      \t\t\t\t\tline1\r\n      \t\t\t\t\tline2\r\n      \t\t\t\t\tstateOrProvince\r\n      \t\t\t\t\tzipCode\r\n    \t\t\t\t\t}\r\n        dateOfBirth\r\n        domainId\r\n        \r\n        domain{\r\n      domainId\r\n      name\r\n      portal{\r\n        dashboardUrl\r\n        loginUrl\r\n        name\r\n        portalId\r\n        portalType\r\n        selfEnrollmentUrl\r\n      }\r\n        }\r\n      \t\t}\r\n      patientId\r\n      patientMrnId\r\n    }\r\n    sourceId\r\n    userPatientRelationships{\r\n      isActive\r\n      isPatientUserExist\r\n      patientId\r\n      relationshipType\r\n      user{\r\n        idpUserId\r\n        isVerified\r\n        self{\r\n          dateOfBirth\r\n          firstName\r\n          gender\r\n          idLevel\r\n          lastName\r\n        }\r\n        userId\r\n        username\r\n      }\r\n      userId\r\n      userPatientRelationshipId\r\n      \r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"patientId\": \"253162F7-B220-4230-A328-19A02742C5E4\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientEnrollmentByCernerRecordId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"Patients Enrollment by cerner records\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.patientEnrollmentByCernerRecordId);\r",
+									"if(jsonData.data.patientEnrollmentByCernerRecordId == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.findfacilities).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patientEnrollmentByCernerRecordId($cernerRecordId: String)\r\n{\r\n  patientEnrollmentByCernerRecordId(cernerRecordId:$cernerRecordId){\r\n    isEnrollmentInProgress\r\n    patientEnrollments\r\n    {\r\n      endDateTime\r\n      enrollmentId\r\n      hasPortalAccess\r\n      patientEnrollmentType\r\n      portal{\r\n        dashboardUrl\r\n        loginUrl\r\n        name\r\n        portalId\r\n        selfEnrollmentUrl\r\n      }\r\n      portalName\r\n      status\r\n      startDateTime\r\n      userId\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{\r\n    \"cernerRecordId\":\"i826p7jd5rk4if5r\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientEnrollmentErrors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"patient Enrollment Errors\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.patientEnrollmentErrors);\r",
+									"if(jsonData.data.patientEnrollmentErrors == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.findfacilities).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patientEnrollmentErrors($patientEnrollmentId: Int){\r\n  patientEnrollmentErrors(patientEnrollmentId:$patientEnrollmentId){\r\n    attemptNumber\r\n    errorId\r\n    errorCode\r\n    errorMessage\r\n    patientEnrollmentId\r\n  }\r\n}",
+								"variables": "{\r\n  \"patientEnrollmentId\": 3608\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientLogs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"patient Logs\";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.patientLogs == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.patientLogs).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patientLogs($portalLogsSearchParameters: PortalLogsSearchRequest,$pageInfo:PageInfo)\r\n{\r\n  patientLogs(portalLogsSearchParameters:$portalLogsSearchParameters,pageInfo:$pageInfo){\r\n    currentPage\r\n    firstRowOnPage\r\n    lastRowOnPage\r\n    pageSize\r\n    pageCount\r\n    results{\r\n      errorCode\r\n      exceptionText\r\n      exceptionBaseMessage\r\n      exceptionMessage\r\n      exceptionMethodName\r\n      exceptionType\r\n      itemId\r\n      level\r\n      message\r\n      timestamp\r\n      username\r\n    }\r\n    rowCount\r\n  }\r\n}",
+								"variables": "{\r\n  \"portalLogsSearchParameters\": {\r\n    \"errorCode\": \"Patient already exists of type self\"\r\n  },\r\n  \"pageInfo\": {\r\n    \"getAll\": true\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"patient \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.patients == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.patients).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patients($query: QueryForRelatedPatientsRequest,\r\n$pageInfo: PageInfo,$sortInfo: SortInfo){\r\n  patients(query:$query,pageInfo:$pageInfo,sortInfo:$sortInfo){\r\n   currentPage\r\n    firstRowOnPage\r\n    lastRowOnPage\r\n    pageSize\r\n    pageCount\r\n    results{\r\n     address{\r\n     city\r\n      countryCode\r\n      line1\r\n      line2\r\n      stateOrProvince\r\n      zipCode\r\n    }\r\n      dateOfBirth\r\n      domain{\r\n        domainId\r\n        name\r\n        portal{\r\n          dashboardUrl\r\n          loginUrl\r\n          portalId\r\n          portalType\r\n          selfEnrollmentUrl\r\n        }\r\n        \r\n      }\r\n      edwRecordsAsPortalsQuery{\r\n        isTrustedUser\r\n        remoteMoniker_edw\r\n        remoteGraphTypeName_QueryForRecordsViaPortalsWizardResponse\r\n        requestId\r\n        results{\r\n          edwMatchType\r\n          isTrusted\r\n          remoteMoniker_edw\r\n          remoteGraphTypeName_FacilitiesForPortal\r\n          \r\n        }\r\n        showWizard\r\n      }\r\n      firstName\r\n      gender\r\n      lastName\r\n      patientId\r\n      patientMrns{\r\n        mrn\r\n        \r\n        patientId\r\n        patientMrnId\r\n      }\r\n      sourceId\r\n      userPatientRelationships{\r\n        patientId\r\n        \r\n      }\r\n    }\r\n    rowCount\r\n  }\r\n}",
+								"variables": "{\r\n  \"query\": {\r\n    \"userIds\": [8582,9808]\r\n  },\r\n  \"pageInfo\": {\r\n    \"getAll\": true\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "portalInvitations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"Portal invitation \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.portalInvitations == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.portalInvitations).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query portalInvitations($verificationCode: String){\r\n  portalInvitations(verificationCode:$verificationCode){\r\n    createdDate\r\n    dateSent\r\n    dateClaimed\r\n    domainId\r\n    domainName\r\n    invitationId\r\n    invitationSource\r\n    modifiedDate\r\n    patientDateOfBirth\r\n    patientFirstName\r\n    patientLastName\r\n    patientRelationshipToRecipient\r\n    recipientEmail\r\n    status\r\n    verificationCode\r\n  }\r\n}",
+								"variables": "{\r\n  \"verificationCode\": \"4939a0d0-cb14-4e3e-9cba-23078945be19\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchCernerPatients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"searchCernerPatients \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.searchCernerPatients == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.searchCernerPatients).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query searchCernerPatients($searchRequest: PatientSearchRequest)\r\n{\r\n  searchCernerPatients(searchRequest:$searchRequest){\r\n    accountType\r\n    dateOfBirth\r\n    domainName\r\n    firstName\r\n    gender\r\n    id\r\n    lastName\r\n  }\r\n}",
+								"variables": "{\r\n  \"searchRequest\": {\r\n    \"firstName\": \"GARRYMIG\",\r\n    \"lastName\": \t\"ZZTESTTILLMANMIG\"\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchPatientEncounters",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"searchPatientEncounters \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.searchPatientEncounters == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.searchPatientEncounters).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query searchPatientEncounters($patientId: String,$domainName: String)\r\n{\r\n  searchPatientEncounters(patientId:$patientId,domainName:$domainName)\r\n  {\r\n    endDate\r\n    encounterType\r\n    encounterLocation\r\n    id\r\n    medicalServiceReceived\r\n    startDate\r\n  }\r\n}",
+								"variables": "{\r\n  \"patientId\": \"BF50E77F-9161-45E0-AD66-6275697C58D3\",\"domainName\": \"MOCKB\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchPatientEnrollments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"searchPatientEnrollments \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.searchPatientEnrollments == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.searchPatientEnrollments).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query searchPatientEnrollments(\r\n$searchRequest: PatientEnrollmentSearchRequest,\r\n$pageInfo: PageInfo ,\r\n$sortInfo: SortInfo = null\r\n){\r\n  searchPatientEnrollments(searchRequest:$searchRequest,pageInfo:$pageInfo,sortInfo:$sortInfo){\r\n   \r\n    currentPage\r\n    firstRowOnPage\r\n    lastRowOnPage\r\n    pageSize\r\n    pageCount\r\n    results{\r\n      endDateTime\r\n      enrollmentId\r\n      messageBody\r\n      patientEnrollmentType\r\n      portalName\r\n      startDateTime\r\n      status\r\n      user{\r\n        idpUserId\r\n        isVerified\r\n        self{\r\n          dateOfBirth\r\n          firstName\r\n          gender\r\n          idLevel\r\n          lastName\r\n        }\r\n        userId\r\n        username\r\n      }\r\n      userId\r\n  \r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"searchRequest\": {\r\n    \r\n    \"portalName\": \"CERTB\" \r\n  },\r\n  \"pageInfo\": {\r\n    \"getAll\": false\r\n  }\r\n\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchPatients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"searchPatients \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.searchPatients == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.searchPatients).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query searchPatients(\r\n$searchRequest: PatientSearchRequest,\r\n$pageInfo: PageInfo ,\r\n$sortInfo: SortInfo)\r\n{\r\n  searchPatients(searchRequest:$searchRequest,pageInfo:$pageInfo,sortInfo:$sortInfo){\r\n   currentPage\r\n    firstRowOnPage\r\n    lastRowOnPage\r\n    pageSize\r\n    pageCount\r\n    results\r\n    {\r\n      address\r\n      {\r\n        \tcity\r\n          countryCode\r\n          line1\r\n          line2\r\n          stateOrProvince\r\n          zipCode\r\n        \r\n      }\r\n      dateOfBirth\r\n      domain{\r\n          \tdomainId\r\n          \tname\r\n          portal\r\n        {\r\n           dashboardUrl\r\n            loginUrl\r\n            name\r\n            portalId\r\n            portalType\r\n            selfEnrollmentUrl\r\n          }\r\n      \t}\r\n      domainId\r\n      firstName\r\n      gender\r\n      lastName\r\n      patientId\r\n      sourceId\r\n      \r\n    }\r\n    rowCount\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"searchRequest\": {\r\n    \"patientId\": \"206CF506-C3C1-4AEB-AA27-A606F50749A8\"\r\n  },\r\n  \"pageInfo\": {\r\n    \"getAll\": true\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchPortalInvitations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"searchPortalInvitations \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.searchPortalInvitations == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.searchPortalInvitations).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query searchPortalInvitations($query: PortalInvitationSearchRequest ,$pageInfo: PageInfo)\r\n{\r\n  searchPortalInvitations(query:$query,pageInfo:$pageInfo){\r\n   currentPage\r\n    firstRowOnPage\r\n    lastRowOnPage\r\n    pageSize\r\n    pageCount\r\n    results{\r\n      createdDate\r\n      dateClaimed\r\n      dateSent\r\n      domainId\r\n      domainName\r\n      invitationId\r\n      invitationSource\r\n      modifiedDate\r\n      patientLastName\r\n      patientFirstName\r\n      patientDateOfBirth\r\n      patientRelationshipToRecipient\r\n      recipientEmail\r\n      status\r\n      verificationCode\r\n    }\r\n    rowCount\r\n  }\r\n}\r\n\r\n  \r\n",
+								"variables": "{\r\n  \"query\": {\r\n    \"patientFirstName\": \"PAUL\",\r\n   \"patientLastName\":  \"ZZTESTCOLOMBO\",\r\n    \"recipientEmail\": \"PAUL.VILLANOVA@PERFICIENT.COM\"\r\n  },\r\n  \"pageInfo\": {\r\n    \"getAll\": true\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "authorizedRepresentative-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"authorizedRepresentative \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.authorizedRepresentative == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.authorizedRepresentative).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query authorizedRepresentative(\r\n$userId: Int,\r\n$patientId: String,\r\n$patientSearchParams: QueryPatientByPersonRequest\r\n){\r\n  \r\n  user{\r\n    authorizedRepresentative(userId:$userId,patientId:$patientId,patientSearchParams:$patientSearchParams)\r\n      {\r\n       isActive\r\n        isPatientUserExist\r\n        patient{\r\n          address\r\n          {\r\n            city\r\n            countryCode\r\n            line1\r\n            line2\r\n            stateOrProvince\r\n            zipCode\r\n          }\r\n        }\r\n        patientId\r\n        relationshipType\r\n        user{\r\n          idpUserId\r\n          isVerified\r\n          self{\r\n            dateOfBirth\r\n            firstName\r\n            gender\r\n            idLevel\r\n            lastName\r\n          }\r\n          selfId\r\n          userId\r\n          username\r\n        }\r\n        userId\r\n        userPatientRelationshipId\r\n     }\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": 7940,\"patientId\": \"206CF506-C3C1-4AEB-AA27-A606F50749A8\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPatientEnrollments-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"getPatientEnrollments \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.getPatientEnrollments == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.getPatientEnrollments).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query getPatientEnrollments(\r\n$userId: Int,\r\n$patientId: String,\r\n$getCompletedEnrollments: Boolean){\r\n  user{\r\n    getPatientEnrollments(userId:$userId,patientId:$patientId,getCompletedEnrollments:$getCompletedEnrollments){\r\n      endDateTime\r\n      enrollmentId\r\n      hasPortalAccess\r\n      patientEnrollmentType\r\n      portal{\r\n        dashboardUrl\r\n        loginUrl\r\n        name\r\n        portalId\r\n        selfEnrollmentUrl\r\n      }\r\n      portalName\r\n      startDateTime\r\n      status\r\n      userId\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"userId\": \"7940\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "migrationDataOperation-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"migrationDataOperation \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.user.migrationDataOperation == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.user.migrationDataOperation).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query migrationDataOperation($userId: Int){\r\n  \r\n  user{\r\n    migrationDataOperation(userId:$userId){\r\n     \r\n      migrationData{\r\n        \r\n        isMigrationCompleted\r\n        isEligibleForMigration\r\n        migrationUrl\r\n        patientLastName\r\n        patientFirstName\r\n        portalName\r\n        userEmail\r\n        userLastName\r\n        userFirstName\r\n      }\r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": 1172308\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientEnrollmentOperation-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"patientEnrollmentOperation \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.user.patientEnrollmentOperation == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.user.patientEnrollmentOperation).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patientEnrollmentOperation($userId: Int){\r\n  user\r\n  {\r\n    patientEnrollmentOperation(userId:$userId){\r\n      \r\n      isEnrollmentInProgress\r\n      patientEnrollments{\r\n        endDateTime\r\n        enrollmentId\r\n        hasPortalAccess\r\n        patientEnrollmentType\r\n        portal{\r\n          dashboardUrl\r\n          loginUrl\r\n          name\r\n          portalId\r\n          selfEnrollmentUrl\r\n        }\r\n        portalName\r\n        startDateTime\r\n        status\r\n        userId\r\n      }\r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": 1172308\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patients -User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"Patients -User \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.user.patients == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.user.patients).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ServiceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query patients($userId: Int,$isActive: Boolean){\r\n  user{\r\n    patients(userId:$userId,isActive:$isActive){\r\n      isActive\r\n      isPatientUserExist\r\n      patient{\r\n        address{\r\n          city\r\n          countryCode\r\n          line1\r\n          line2\r\n          stateOrProvince\r\n          zipCode\r\n        }\r\n        dateOfBirth\r\n        domain\r\n        {\r\n          domainId\r\n          name\r\n          portal{\r\n            dashboardUrl\r\n            loginUrl\r\n            name\r\n            portalId\r\n            portalType\r\n            selfEnrollmentUrl\r\n          }\r\n        }\r\n        firstName\r\n        gender\r\n        lastName\r\n        patientId\r\n        patientMrns{\r\n          mrn\r\n          patientId\r\n          patientMrnId\r\n        }\r\n        sourceId\r\n        \r\n      }\r\n      patientId\r\n      relationshipType\r\n      user{\r\n        idpUserId\r\n        isVerified\r\n        self{\r\n          dateOfBirth\r\n          firstName\r\n          gender\r\n          idLevel\r\n          lastName\r\n        }\r\n        selfId\r\n        userId\r\n        username\r\n      }\r\n      userId\r\n      userPatientRelationshipId\r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": 1172273\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "selfEnrollmentUserLockInfo-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"selfEnrollmentUserLockInfo \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.user.selfEnrollmentUserLockInfo == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.user.selfEnrollmentUserLockInfo).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query selfEnrollmentUserLockInfo($userId: Int){\r\n  user{\r\n    selfEnrollmentUserLockInfo(userId:$userId){\r\n     attemptCount\r\n      firstAttemptDate\r\n      lockType\r\n      lockedUntilDate\r\n      userId\r\n    }\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": 9593\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "selfEnrollmentUserLockStatus-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var queryName = \"selfEnrollmentUserLockStatus \";\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"var jsonData = pm.response.json();\r",
+									"// console.log(jsonData.data.patientLogs);\r",
+									"if(jsonData.data.user.selfEnrollmentUserLockStatus == null ){\r",
+									"    pm.test(queryName+\"GraphiQL failed with following error message: \"+jsonData.errors[0].message,function(){\r",
+									"        pm.expect(jsonData.data.user.selfEnrollmentUserLockStatus).to.not.eql(null);\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"pm.test(queryName+\" graphiQL, API execution status have response code \"+pm.response.code, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var headers = pm.response.headers.all();\r",
+									" //console.log(headers);\r",
+									"var z;\r",
+									"for(var i = 0; i < headers.length; i++){\r",
+									" if(headers[i].key ==\"CSH-Correlation-Id\"){\r",
+									"\t console.log(headers[i]);\r",
+									"     z = i;\r",
+									"      }\r",
+									"}\r",
+									"pm.test(\"Corelation Id is \"+headers[z].value, function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"}\r",
+									"}\r",
+									"\r",
+									"else{\r",
+									"    pm.test(queryName+\" GraphiQL, API execution failed with response code \"+pm.response.code,function(){\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    }\r",
+									"    );\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query selfEnrollmentUserLockStatus($userId: Int){\r\n  user{\r\n    selfEnrollmentUserLockStatus(userId:$userId)\r\n     }\r\n}",
+								"variables": "{\r\n  \"userId\": 2889\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{BaseURLDev}}",
+							"host": [
+								"{{BaseURLDev}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "userAccessToken",
+			"value": ""
+		}
+	]
+}

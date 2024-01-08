@@ -1,0 +1,2 @@
+﻿SourceId,PrincipalSourceId,Domain,Mrn,FirstName,LastName,Email,EnrollmentId,PatientEnrollmentId,AttemptNumber,ErrorCode,ErrorMessage
+42271217,42271217,MOCKA,66345567,Mark,John,dev.patient12@e.rainforest.com,118,31,1,patient-already-exists-of-type-self,patient-already-exists-of-type-self

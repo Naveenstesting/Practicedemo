@@ -1,0 +1,470 @@
+{
+	"info": {
+		"_postman_id": "17b916b2-e206-4873-897c-a063f5397c95",
+		"name": "Enrollment/Portal-V1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Enrollment/Portal V1 ",
+			"item": [
+				{
+					"name": "/api/v1/enrollment/portals/update-enrollment-success-or-failure-status-and-send-email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1ba5e18-96ec-4e18-84a0-4c3a314aadc5",
+								"exec": [
+									"pm.test(\"Enrollmentid isValid\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"true\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"EnrollmentId\": \"{{EnrollmentId}}\",\n    \"PatientEnrollmentStatus\": \"0\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/enrollment/portals/update-enrollment-success-or-failure-status-and-send-email",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"enrollment",
+								"portals",
+								"update-enrollment-success-or-failure-status-and-send-email"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"EnrollmentId\": \"<integer>\",\n    \"PatientEnrollmentStatus\": \"<integer>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/enrollment/portals/update-enrollment-success-or-failure-status-and-send-email",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"enrollment",
+										"portals",
+										"update-enrollment-success-or-failure-status-and-send-email"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "/api/v1/enrollment/portals/enroll-patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8bf074cb-a80c-42ee-89e6-6e3feda8fc6d",
+								"exec": [
+									"pm.test(\"Enrollmentid isValid\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"true\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"{{EnrollmentId}}\"\r\n\r\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/enrollment/portals/enroll-patient/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"enrollment",
+								"portals",
+								"enroll-patient",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\"<integer>\""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/enrollment/portals/enroll-patient",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"enrollment",
+										"portals",
+										"enroll-patient"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "/api/v1/enrollment/portals/create-enrollment-error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e4070a11-42a6-4f91-849d-0050f66cb6de",
+								"exec": [
+									"pm.test(\"Enrollmentid isValid\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"true\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n       \n        \"PatientEnrollmentId\": \"{{PatientEnrollmentId}}\",\n        \"AttemptNumber\": \"{{AttemptNumber}}\",\n        \"ErrorCode\": \"{{ErrorCode}}\",\n        \"ErrorMessage\": \"{{ErrorMessage}}\"\n       \n    }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/enrollment/portals/create-enrollment-error",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"enrollment",
+								"portals",
+								"create-enrollment-error"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"ErrorId\": \"<integer>\",\n        \"PatientEnrollmentId\": \"<integer>\",\n        \"AttemptNumber\": \"<integer>\",\n        \"ErrorCode\": \"<string>\",\n        \"ErrorMessage\": \"<string>\",\n        \"CreatedDate\": \"<dateTime>\",\n        \"ModifiedDate\": \"<dateTime>\"\n    },\n    {\n        \"ErrorId\": \"<integer>\",\n        \"PatientEnrollmentId\": \"<integer>\",\n        \"AttemptNumber\": \"<integer>\",\n        \"ErrorCode\": \"<string>\",\n        \"ErrorMessage\": \"<string>\",\n        \"CreatedDate\": \"<dateTime>\",\n        \"ModifiedDate\": \"<dateTime>\"\n    }\n]"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/enrollment/portals/create-enrollment-error",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"enrollment",
+										"portals",
+										"create-enrollment-error"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "/api/v1/portals/patient-enrollment-error-alert-notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2095e7c6-46a0-45e8-a91f-06d9aaa8c465",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portals/patient-enrollment-error-alert-notification",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portals",
+								"patient-enrollment-error-alert-notification"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/portals/patient-enrollment-error-alert-notification",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"portals",
+										"patient-enrollment-error-alert-notification"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Queries the version of the API",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portals/version",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portals",
+								"version"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Returns the API version",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/portals/version",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"portals",
+										"version"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "996b5549-5d58-47f1-a907-4da8f4f7e36f",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2776743a-1827-49dd-bf4e-5e38f65268b3",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

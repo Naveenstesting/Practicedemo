@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "3ee39116-78f2-4d7b-b87a-75e56bb27d57",
+		"name": "Patients-V1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "patients ",
+			"item": [
+				{
+					"name": "Resets the state of a patient so that the patient may repeat the portal migration enrollment process",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portals/patients/migration?DomainName=MOCKA&SourceId={{sourceId}}&Username={{userName}}&DeleteUser=false&ResetToLevel2=false&ResetIndividualInvitation=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portals",
+								"patients",
+								"migration"
+							],
+							"query": [
+								{
+									"key": "DomainName",
+									"value": "MOCKA"
+								},
+								{
+									"key": "SourceId",
+									"value": "{{sourceId}}"
+								},
+								{
+									"key": "Username",
+									"value": "{{userName}}"
+								},
+								{
+									"key": "DeleteUser",
+									"value": "false"
+								},
+								{
+									"key": "ResetToLevel2",
+									"value": "false"
+								},
+								{
+									"key": "ResetIndividualInvitation",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Indicates the reset operation completed successfully",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/portals/patients/migration?DomainName=<string>&SourceId=<string>&Username=<string>&DeleteUser=<boolean>&ResetToLevel2=<boolean>&ResetIndividualInvitation=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"portals",
+										"patients",
+										"migration"
+									],
+									"query": [
+										{
+											"key": "DomainName",
+											"value": "<string>"
+										},
+										{
+											"key": "SourceId",
+											"value": "<string>"
+										},
+										{
+											"key": "Username",
+											"value": "<string>"
+										},
+										{
+											"key": "DeleteUser",
+											"value": "<boolean>"
+										},
+										{
+											"key": "ResetToLevel2",
+											"value": "<boolean>"
+										},
+										{
+											"key": "ResetIndividualInvitation",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Resets the state of a patient so that the patient may repeat the portal invitation enrollment process",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portals/patients/invitation?DomainName={{DomainName}}&SourceId={{sourceId}}&Username={{userName}}&DeleteUser=false&ResetToLevel2=false&ResetIndividualInvitation=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portals",
+								"patients",
+								"invitation"
+							],
+							"query": [
+								{
+									"key": "DomainName",
+									"value": "{{DomainName}}"
+								},
+								{
+									"key": "SourceId",
+									"value": "{{sourceId}}"
+								},
+								{
+									"key": "Username",
+									"value": "{{userName}}"
+								},
+								{
+									"key": "DeleteUser",
+									"value": "false"
+								},
+								{
+									"key": "ResetToLevel2",
+									"value": "false"
+								},
+								{
+									"key": "ResetIndividualInvitation",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Indicates the reset operation completed successfully",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/portals/patients/invitation?DomainName=<string>&SourceId=<string>&Username=<string>&DeleteUser=<boolean>&ResetToLevel2=<boolean>&ResetIndividualInvitation=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"portals",
+										"patients",
+										"invitation"
+									],
+									"query": [
+										{
+											"key": "DomainName",
+											"value": "<string>"
+										},
+										{
+											"key": "SourceId",
+											"value": "<string>"
+										},
+										{
+											"key": "Username",
+											"value": "<string>"
+										},
+										{
+											"key": "DeleteUser",
+											"value": "<boolean>"
+										},
+										{
+											"key": "ResetToLevel2",
+											"value": "<boolean>"
+										},
+										{
+											"key": "ResetIndividualInvitation",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"IsValid\": false,\n \"Errors\": [\n  {\n   \"Code\": \"aliqua\",\n   \"Message\": \"non labore anim id\"\n  },\n  {\n   \"Code\": \"labore eu sint\",\n   \"Message\": \"elit consequat ad consectetur\"\n  }\n ],\n \"Warnings\": [\n  {\n   \"Code\": \"ea\",\n   \"Message\": \"veniam culpa\"\n  },\n  {\n   \"Code\": \"Duis ut ad et\",\n   \"Message\": \"Duis consectetur eiusmod cupidatat\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "296ec282-cea8-4c3c-9e1d-59649bed85dd",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "33a93ae9-d5da-453c-8809-7f97e63d4f0e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
